@@ -25,6 +25,7 @@ public class BlackListSearchThread extends Thread {
         this.ocurrencesCount = ocurrencesCount;
         this.checkedListCount = checkedListsCount;
         this.blackListOcurrences = blackListOcurrences;
+        System.out.println(inicial +" "+fin);
     }
 
     public void run() {

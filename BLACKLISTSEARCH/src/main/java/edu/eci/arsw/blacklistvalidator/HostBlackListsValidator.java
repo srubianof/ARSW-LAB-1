@@ -35,23 +35,31 @@ public class HostBlackListsValidator {
         LinkedList<Integer> blackListOcurrences = new LinkedList<>();
 
         AtomicInteger ocurrencesCount = new AtomicInteger();
-        AtomicInteger checkedListsCount= new AtomicInteger();
-
+        AtomicInteger checkedListsCount = new AtomicInteger();
 
         HostBlacklistsDataSourceFacade skds = HostBlacklistsDataSourceFacade.getInstance();
         int totalServers = skds.getRegisteredServersCount();
         int avg = totalServers / n;
         int last = 0;
         int i = 0;
-
-        BlackListSearchThread[] hilos = new BlackListSearchThread[n];
+        int actualThread = 0;
+        BlackListSearchThread[] hilos = new BlackListSearchThread[n+1];
 
         while (last < totalServers) {
-            hilos[i] = new BlackListSearchThread(ipaddress, last, last + avg, skds,ocurrencesCount,checkedListsCount,blackListOcurrences);
-            hilos[i].start();
-            last += avg;
+            if (actualThread != n) {
+                hilos[i] = new BlackListSearchThread(ipaddress, last, last + avg, skds, ocurrencesCount, checkedListsCount, blackListOcurrences);
+                actualThread++;
+                last += avg;
+            } else {
+                hilos[i] = new BlackListSearchThread(ipaddress, last, last + (totalServers % n), skds, ocurrencesCount, checkedListsCount, blackListOcurrences);
+                last = totalServers;
+            }
             i++;
+
         }
+//        for (BlackListSearchThread t : hilos) {
+//            t.start();
+//        }
         for (BlackListSearchThread t : hilos) {
             try {
                 t.join();
