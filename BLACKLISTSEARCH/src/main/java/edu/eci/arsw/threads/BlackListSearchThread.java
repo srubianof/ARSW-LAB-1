@@ -25,7 +25,6 @@ public class BlackListSearchThread extends Thread {
         this.ocurrencesCount = ocurrencesCount;
         this.checkedListCount = checkedListsCount;
         this.blackListOcurrences = blackListOcurrences;
-        System.out.println(inicial +" "+fin);
     }
 
     public void run() {
@@ -36,10 +35,6 @@ public class BlackListSearchThread extends Thread {
                 ocurrencesCount.getAndIncrement();
             }
         }
-//        System.out.println("JIJIJIJIJI");
-//        for (Integer i : blackListOcurrences) {
-//            System.out.println(i);
-//        }
     }
 
     public String getIp() {

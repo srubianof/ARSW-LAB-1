@@ -42,8 +42,8 @@ public class HostBlackListsValidator {
         int avg = totalServers / n;
         int last = 0;
         int i = 0;
-        int actualThread = 0;
-        BlackListSearchThread[] hilos = new BlackListSearchThread[n+1];
+        int actualThread = 1;
+        BlackListSearchThread[] hilos = new BlackListSearchThread[n];
 
         while (last < totalServers) {
             if (actualThread != n) {
@@ -57,9 +57,9 @@ public class HostBlackListsValidator {
             i++;
 
         }
-//        for (BlackListSearchThread t : hilos) {
-//            t.start();
-//        }
+        for (BlackListSearchThread t : hilos) {
+            t.start();
+        }
         for (BlackListSearchThread t : hilos) {
             try {
                 t.join();
