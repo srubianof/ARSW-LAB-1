@@ -48,7 +48,7 @@ public class Snake extends Observable implements Runnable {
     @Override
     public void run() {
         while (!snakeEnd) {
-            
+
             snakeCalc();
 
             //NOTIFY CHANGES TO GUI
@@ -57,43 +57,45 @@ public class Snake extends Observable implements Runnable {
 
             try {
                 if (hasTurbo == true) {
-                    Thread.sleep(500 / 3);
+                    Thread.sleep(5 / 3);
                 } else {
-                    Thread.sleep(500);
+                    Thread.sleep(5);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
         }
-        
+
         fixDirection(head);
-        
-        
+
+
     }
 
     private void snakeCalc() {
-        head = snakeBody.peekFirst();
+        synchronized (snakeBody) {
+            head = snakeBody.peekFirst();
 
-        newCell = head;
+            newCell = head;
 
-        newCell = changeDirection(newCell);
-        
-        randomMovement(newCell);
+            newCell = changeDirection(newCell);
 
-        checkIfFood(newCell);
-        checkIfJumpPad(newCell);
-        checkIfTurboBoost(newCell);
-        checkIfBarrier(newCell);
-        
-        snakeBody.push(newCell);
+            randomMovement(newCell);
 
-        if (growing <= 0) {
-            newCell = snakeBody.peekLast();
-            snakeBody.remove(snakeBody.peekLast());
-            Board.gameboard[newCell.getX()][newCell.getY()].freeCell();
-        } else if (growing != 0) {
-            growing--;
+            checkIfFood(newCell);
+            checkIfJumpPad(newCell);
+            checkIfTurboBoost(newCell);
+            checkIfBarrier(newCell);
+
+            snakeBody.push(newCell);
+
+            if (growing <= 0) {
+                newCell = snakeBody.peekLast();
+                snakeBody.remove(snakeBody.peekLast());
+                Board.gameboard[newCell.getX()][newCell.getY()].freeCell();
+            } else if (growing != 0) {
+                growing--;
+            }
         }
 
     }
@@ -103,11 +105,11 @@ public class Snake extends Observable implements Runnable {
             // crash
             System.out.println("[" + idt + "] " + "CRASHED AGAINST BARRIER "
                     + newCell.toString());
-            snakeEnd=true;
+            snakeEnd = true;
         }
     }
 
-    
+
     private Cell fixDirection(Cell newCell) {
 
         // revert movement
@@ -128,13 +130,14 @@ public class Snake extends Observable implements Runnable {
     }
 
     private boolean checkIfOwnBody(Cell newCell) {
-        for (Cell c : snakeBody) {
-            if (newCell.getX() == c.getX() && newCell.getY() == c.getY()) {
-                return true;
+        synchronized (snakeBody) {
+            for (Cell c : snakeBody) {
+                if (newCell.getX() == c.getX() && newCell.getY() == c.getY()) {
+                    return true;
+                }
             }
         }
         return false;
-
     }
 
     private void randomMovement(Cell newCell) {
