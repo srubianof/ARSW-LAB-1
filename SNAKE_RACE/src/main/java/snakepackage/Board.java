@@ -30,6 +30,8 @@ public class Board extends JLabel implements Observer {
     static int[] result = new int[SnakeApp.MAX_THREADS];
     Random random = new Random();
     static Cell[][] gameboard = new Cell[GridSize.GRID_WIDTH][GridSize.GRID_HEIGHT];
+    private String message2="";
+    private String message1="";
 
     @SuppressWarnings("unused")
     public Board() {
@@ -113,6 +115,7 @@ public class Board extends JLabel implements Observer {
         drawBarriers(g);
         drawJumpPads(g);
         drawTurboBoosts(g);
+        writeInfo(g);
     }
 
     private void drawTurboBoosts(Graphics g) {
@@ -221,8 +224,19 @@ public class Board extends JLabel implements Observer {
         }
 
     }
+    public void writeInfo(Graphics g){
+        g.drawString(this.message1,700,200);
+        g.drawString(this.message2,700,250);
+
+    }
     @Override
     public void update(Observable arg0, Object arg1) {
         repaint();
+    }
+
+
+    public void setMessages(String message1,String message2) {
+        this.message1 = message1;
+        this.message2 = message2;
     }
 }

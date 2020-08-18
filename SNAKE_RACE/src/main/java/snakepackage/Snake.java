@@ -3,13 +3,14 @@ package snakepackage;
 import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import enums.Direction;
 import enums.GridSize;
 
 public class Snake extends Observable implements Runnable {
-
-    private int idt;
+    private boolean despierto=false;
+    private int idt,size;
     private Cell head;
     private Cell newCell;
     private LinkedList<Cell> snakeBody = new LinkedList<Cell>();
@@ -26,11 +27,14 @@ public class Snake extends Observable implements Runnable {
     private boolean isSelected = false;
     private int growing = 0;
     public boolean goal = false;
+    private AtomicInteger firstBlood;
 
-    public Snake(int idt, Cell head, int direction) {
+    public Snake(int idt, Cell head, int direction, AtomicInteger c) {
         this.idt = idt;
+        this.size=0;
         this.direction = direction;
         generateSnake(head);
+        firstBlood = c;
 
     }
 
@@ -47,7 +51,17 @@ public class Snake extends Observable implements Runnable {
 
     @Override
     public void run() {
+        despierto=true;
         while (!snakeEnd) {
+            synchronized (this){
+                while(!despierto){
+                    try {
+                        this.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
 
             snakeCalc();
 
@@ -57,9 +71,9 @@ public class Snake extends Observable implements Runnable {
 
             try {
                 if (hasTurbo == true) {
-                    Thread.sleep(5 / 3);
+                    Thread.sleep(50 / 3);
                 } else {
-                    Thread.sleep(5);
+                    Thread.sleep(50);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -106,6 +120,11 @@ public class Snake extends Observable implements Runnable {
             System.out.println("[" + idt + "] " + "CRASHED AGAINST BARRIER "
                     + newCell.toString());
             snakeEnd = true;
+            if(firstBlood.get()==-1){
+                firstBlood.set(this.idt);
+                //System.out.println(firstBlood);
+            }
+
         }
     }
 
@@ -192,6 +211,7 @@ public class Snake extends Observable implements Runnable {
 
         if (Board.gameboard[newCell.getX()][newCell.getY()].isFood()) {
             // eat food
+            this.size+=1;
             growing += 3;
             int x = random.nextInt(GridSize.GRID_HEIGHT);
             int y = random.nextInt(GridSize.GRID_WIDTH);
@@ -345,5 +365,16 @@ public class Snake extends Observable implements Runnable {
     public int getIdt() {
         return idt;
     }
+    public synchronized void despertar(){
+        this.despierto=true;
+        this.notify();
 
+    }
+    public void dormir(){
+        this.despierto=false;
+    }
+
+    public int getGrowing() {
+        return size;
+    }
 }
