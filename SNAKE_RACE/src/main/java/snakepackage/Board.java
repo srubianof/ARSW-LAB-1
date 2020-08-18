@@ -30,8 +30,8 @@ public class Board extends JLabel implements Observer {
     static int[] result = new int[SnakeApp.MAX_THREADS];
     Random random = new Random();
     static Cell[][] gameboard = new Cell[GridSize.GRID_WIDTH][GridSize.GRID_HEIGHT];
-    private String message2="";
-    private String message1="";
+    private String message2 = "";
+    private String message1 = "";
 
     @SuppressWarnings("unused")
     public Board() {
@@ -162,9 +162,6 @@ public class Board extends JLabel implements Observer {
         for (Cell c : barriers) {
             g.drawImage(firewall, c.getX() * GridSize.WIDTH_BOX, c.getY()
                     * GridSize.HEIGH_BOX, this);
-            // g.fillRect(c.getX() * Grid_Size.WIDTH_BOX, c.getY()
-            // * Grid_Size.HEIGH_BOX, Grid_Size.WIDTH_BOX,
-            // Grid_Size.HEIGH_BOX);
         }
     }
 
@@ -224,18 +221,21 @@ public class Board extends JLabel implements Observer {
         }
 
     }
-    public void writeInfo(Graphics g){
-        g.drawString(this.message1,700,200);
-        g.drawString(this.message2,700,250);
+
+    public void writeInfo(Graphics g) {
+        g.drawString(this.message1, 600, 200);
+        g.drawString(this.message2, 600, 250);
+        repaint();
 
     }
+
     @Override
     public void update(Observable arg0, Object arg1) {
         repaint();
     }
 
 
-    public void setMessages(String message1,String message2) {
+    public void setMessages(String message1, String message2) {
         this.message1 = message1;
         this.message2 = message2;
     }

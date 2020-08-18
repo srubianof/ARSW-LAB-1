@@ -9,12 +9,11 @@ import enums.Direction;
 import enums.GridSize;
 
 public class Snake extends Observable implements Runnable {
-    private boolean despierto=false;
-    private int idt,size;
+    private boolean despierto = false;
+    private int idt, size;
     private Cell head;
     private Cell newCell;
     private LinkedList<Cell> snakeBody = new LinkedList<Cell>();
-    //private Cell objective = null;
     private Cell start = null;
 
     private boolean snakeEnd = false;
@@ -31,11 +30,10 @@ public class Snake extends Observable implements Runnable {
 
     public Snake(int idt, Cell head, int direction, AtomicInteger c) {
         this.idt = idt;
-        this.size=0;
+        this.size = 0;
         this.direction = direction;
         generateSnake(head);
         firstBlood = c;
-
     }
 
     public boolean isSnakeEnd() {
@@ -51,10 +49,10 @@ public class Snake extends Observable implements Runnable {
 
     @Override
     public void run() {
-        despierto=true;
+        despierto = true;
         while (!snakeEnd) {
-            synchronized (this){
-                while(!despierto){
+            synchronized (this) {
+                while (!despierto) {
                     try {
                         this.wait();
                     } catch (InterruptedException e) {
@@ -62,28 +60,21 @@ public class Snake extends Observable implements Runnable {
                     }
                 }
             }
-
             snakeCalc();
-
             //NOTIFY CHANGES TO GUI
             setChanged();
             notifyObservers();
-
             try {
                 if (hasTurbo == true) {
-                    Thread.sleep(50 / 3);
+                    Thread.sleep(5 / 3);
                 } else {
-                    Thread.sleep(50);
+                    Thread.sleep(5);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
         }
-
         fixDirection(head);
-
-
     }
 
     private void snakeCalc() {
@@ -120,11 +111,9 @@ public class Snake extends Observable implements Runnable {
             System.out.println("[" + idt + "] " + "CRASHED AGAINST BARRIER "
                     + newCell.toString());
             snakeEnd = true;
-            if(firstBlood.get()==-1){
+            if (firstBlood.get() == -1) {
                 firstBlood.set(this.idt);
-                //System.out.println(firstBlood);
             }
-
         }
     }
 
@@ -211,7 +200,7 @@ public class Snake extends Observable implements Runnable {
 
         if (Board.gameboard[newCell.getX()][newCell.getY()].isFood()) {
             // eat food
-            this.size+=1;
+            this.size += 1;
             growing += 3;
             int x = random.nextInt(GridSize.GRID_HEIGHT);
             int y = random.nextInt(GridSize.GRID_WIDTH);
@@ -239,7 +228,6 @@ public class Snake extends Observable implements Runnable {
 
     private Cell changeDirection(Cell newCell) {
         // Avoid out of bounds
-
         while (direction == Direction.UP && (newCell.getY() - 1) < 0) {
             if ((head.getX() - 1) < 0) {
                 this.direction = Direction.RIGHT;
@@ -344,12 +332,6 @@ public class Snake extends Observable implements Runnable {
         }
     }
 
-    /*public void setObjective(Cell c) {
-        System.out.println("Setting objective - " + c.getX() + ":" + c.getY()
-                + " for Snake" + this.idt);
-        this.objective = c;
-    }*/
-
     public LinkedList<Cell> getBody() {
         return this.snakeBody;
     }
@@ -365,13 +347,15 @@ public class Snake extends Observable implements Runnable {
     public int getIdt() {
         return idt;
     }
-    public synchronized void despertar(){
-        this.despierto=true;
+
+    public synchronized void despertar() {
+        this.despierto = true;
         this.notify();
 
     }
-    public void dormir(){
-        this.despierto=false;
+
+    public void dormir() {
+        this.despierto = false;
     }
 
     public int getGrowing() {
