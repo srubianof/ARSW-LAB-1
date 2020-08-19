@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import enums.Direction;
 import enums.GridSize;
@@ -65,11 +66,14 @@ public class Snake extends Observable implements Runnable {
             setChanged();
             notifyObservers();
             try {
-                if (hasTurbo == true) {
-                    Thread.sleep(5 / 3);
-                } else {
-                    Thread.sleep(5);
+                synchronized (this) {
+                    if (hasTurbo == true) {
+                        wait(5/3);
+                    } else {
+                        wait(5);
+                    }
                 }
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

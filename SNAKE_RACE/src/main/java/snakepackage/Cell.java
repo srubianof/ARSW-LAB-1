@@ -178,9 +178,9 @@ public class Cell {
     /**
      * Liberta celula ( ultimo elemento da cobra liberta esta celula para poder ser ocupada por outras )
      */
-    public synchronized void freeCell() {
+    public void freeCell() {
         full = false;
-        notifyAll();
+//        notifyAll();
     }
 
     /**

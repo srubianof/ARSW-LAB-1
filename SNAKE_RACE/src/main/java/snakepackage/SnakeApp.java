@@ -23,7 +23,7 @@ import javax.swing.JPanel;
 public class SnakeApp {
 
     private static SnakeApp app;
-    public static final int MAX_THREADS = 50;
+    public static final int MAX_THREADS = 16;
     Snake[] snakes = new Snake[MAX_THREADS];
     private Snake firstBlood = null;
     private int idLongestSnake = 0;
@@ -96,6 +96,10 @@ public class SnakeApp {
         frame.add(actionsBPabel, BorderLayout.SOUTH);
     }
 
+    /**
+     * Main execution method where we create the snakes
+     * @param args
+     */
     public static void main(String[] args) {
         app = new SnakeApp();
         app.prepararElementos();
@@ -165,11 +169,18 @@ public class SnakeApp {
         }
         String mensaje = (firstBloodId.get() == -1) ? "No snake is dead so far." : "The worst snake:(the first snake  dead) Snake #" + Integer.toString(firstBloodId.get());
         board.setMessages("The Longest Snake: " + Integer.toString(idLongestSnake), mensaje);
+        try {
+            Thread.sleep(5);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         System.out.println("Thread (snake) status:");
+
         for (int i = 0; i != MAX_THREADS; i++) {
             System.out.println("[" + i + "] :" + thread[i].getState());
             //System.out.println(thread[i].isAlive());
         }
+
     }
 
     public static SnakeApp getApp() {
