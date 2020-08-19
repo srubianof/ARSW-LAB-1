@@ -51,11 +51,11 @@ public class HostBlackListsValidator {
                 actualThread++;
                 last += avg;
             } else {
-                hilos[i] = new BlackListSearchThread(ipaddress, last, last + (totalServers % n), skds, ocurrencesCount, checkedListsCount, blackListOcurrences);
+                int a = n == 1 ? totalServers : last + (totalServers % n);
+                hilos[i] = new BlackListSearchThread(ipaddress, last, a, skds, ocurrencesCount, checkedListsCount, blackListOcurrences);
                 last = totalServers;
             }
             i++;
-
         }
         for (BlackListSearchThread t : hilos) {
             t.start();
