@@ -1,0 +1,10 @@
+POSIBLES CONDICIONES DE CARRERA:
+	- Existirá una condición de carrera cuando varios hilos intentan acceder o modificar la lista del cuerpo de la serpiente: en los métodos de drawSnake, en el for se intenta acceder a la lista(snakebody), en snakeCalc en todo el método se realizan operaciones de lectura y escritura en esta lista y finalmente en el método checkifownbody en el cual se leen los elementos de la lista del cuerpo de la serpiente  
+	- Se esta utilizando una LinkedList sin tener en cuenta que pueden existir condiciones de carrera
+ 	
+No hay uso innecesario de pausas activas. 
+
+
+
+Se va a sincronizar el atributo compartido entre los hilos en cada region critica identificada:
+	-en Board en drawSnake se hace un get dentro de un for (line 186)
